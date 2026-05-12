@@ -1,0 +1,62 @@
+<div class="tool-container">
+  <div class="tool-header">
+    <h1><span class="tool-icon">⇄</span> 文字差異比對</h1>
+    <p>比較兩段文字的差異，逐行高亮顯示變更</p>
+  </div>
+
+  <div class="card">
+    <div class="tool-actions">
+      <button class="btn btn-secondary" (click)="loadSample()">載入範例</button>
+      <button class="btn btn-ghost" (click)="clear()">清除</button>
+      @if (diff().length > 0) {
+        <div class="diff-stats">
+          <span class="stat added">+{{ stats.added }} 新增</span>
+          <span class="stat removed">-{{ stats.removed }} 刪除</span>
+          <span class="stat unchanged">{{ stats.unchanged }} 不變</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="io-grid">
+    <div class="form-group">
+      <label>原始文字 (A)</label>
+      <textarea
+        class="form-control mono"
+        rows="14"
+        placeholder="輸入原始文字..."
+        [ngModel]="textA()"
+        (ngModelChange)="textA.set($event)"
+      ></textarea>
+    </div>
+    <div class="form-group">
+      <label>修改後文字 (B)</label>
+      <textarea
+        class="form-control mono"
+        rows="14"
+        placeholder="輸入修改後文字..."
+        [ngModel]="textB()"
+        (ngModelChange)="textB.set($event)"
+      ></textarea>
+    </div>
+  </div>
+
+  @if (textA() || textB()) {
+    <div class="form-group">
+      <label>差異結果</label>
+      <div class="diff-view">
+        @for (line of diff(); track $index) {
+          <div class="diff-line" [class]="line.type">
+            <span class="diff-gutter">
+              {{ line.type === 'removed' ? line.lineA : line.type === 'added' ? line.lineB : line.lineA }}
+            </span>
+            <span class="diff-marker">
+              {{ line.type === 'added' ? '+' : line.type === 'removed' ? '-' : ' ' }}
+            </span>
+            <span class="diff-content">{{ line.content }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

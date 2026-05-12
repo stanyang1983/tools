@@ -1,0 +1,45 @@
+<div class="tool-container">
+  <div class="tool-header">
+    <h1><span class="tool-icon">64</span> Base64 編解碼</h1>
+    <p>將文字進行 Base64 編碼與解碼</p>
+  </div>
+
+  <div class="card">
+    <div class="tool-actions">
+      <button class="btn btn-primary" (click)="encode()">編碼 →</button>
+      <button class="btn btn-primary" (click)="decode()">← 解碼</button>
+      <button class="btn btn-secondary" (click)="swap()">⇄ 互換</button>
+      <button class="btn btn-ghost" (click)="clear()">清除</button>
+    </div>
+  </div>
+
+  <div class="io-grid">
+    <div class="form-group">
+      <label>輸入文字</label>
+      <textarea
+        class="form-control"
+        rows="12"
+        placeholder="輸入要編碼或解碼的文字..."
+        [ngModel]="input()"
+        (ngModelChange)="input.set($event)"
+      ></textarea>
+    </div>
+    <div class="form-group">
+      <div class="output-label">
+        <label>輸出結果</label>
+        @if (output()) {
+          <button class="btn btn-ghost btn-sm" (click)="copy()">複製</button>
+        }
+      </div>
+      @if (error()) {
+        <div class="error-box">⚠ {{ error() }}</div>
+      } @else {
+        <textarea class="form-control mono" rows="12" readonly [value]="output()" placeholder="結果將顯示在這裡"></textarea>
+      }
+    </div>
+  </div>
+</div>
+
+@if (showToast()) {
+  <div class="copy-toast">✓ 已複製到剪貼簿</div>
+}

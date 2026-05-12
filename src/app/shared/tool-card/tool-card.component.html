@@ -1,0 +1,18 @@
+<a class="tool-card" [routerLink]="tool.route">
+  <div class="tool-card-icon">{{ tool.icon }}</div>
+  <div class="tool-card-body">
+    <div class="tool-card-title">
+      {{ tool.name }}
+      @if (tool.isNew) {
+        <span class="new-badge">NEW</span>
+      }
+    </div>
+    <p class="tool-card-desc">{{ tool.description }}</p>
+    <div class="tool-card-tags">
+      @for (tag of tool.tags; track tag) {
+        <span class="tag">{{ tag }}</span>
+      }
+    </div>
+  </div>
+  <span class="tool-card-arrow">→</span>
+</a>

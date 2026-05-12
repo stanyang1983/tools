@@ -1,0 +1,41 @@
+<aside class="sidebar" [class.collapsed]="collapsed()" [class.open]="layout.sidebarOpen()">
+  <div class="sidebar-header">
+    @if (!collapsed()) {
+      <span class="sidebar-title">工具分類</span>
+    }
+    <button class="collapse-btn btn btn-ghost btn-sm" (click)="toggleCollapse()" [title]="collapsed() ? '展開' : '收合'">
+      {{ collapsed() ? '»' : '«' }}
+    </button>
+  </div>
+
+  @if (!collapsed()) {
+    <nav class="sidebar-nav">
+      <div class="category-list">
+        @for (cat of categories; track cat) {
+          <button
+            class="category-btn"
+            [class.active]="activeCategory() === cat"
+            (click)="setCategory(cat)"
+          >{{ cat }}</button>
+        }
+      </div>
+
+      <div class="tool-list">
+        @for (tool of tools; track tool.id) {
+          <a
+            class="tool-link"
+            [routerLink]="tool.route"
+            routerLinkActive="active"
+            (click)="navigate()"
+          >
+            <span class="tool-link-icon">{{ tool.icon }}</span>
+            <span class="tool-link-name">{{ tool.name }}</span>
+            @if (tool.isNew) {
+              <span class="new-badge">NEW</span>
+            }
+          </a>
+        }
+      </div>
+    </nav>
+  }
+</aside>

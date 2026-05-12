@@ -1,0 +1,180 @@
+<div class="tool-container">
+  <div class="tool-header">
+    <h1><span class="tool-icon">🖼</span> 圖片格式轉換</h1>
+    <p>支援 PNG、JPEG、WebP、AVIF、BMP 等格式互轉，可調整品質與輸出尺寸</p>
+  </div>
+
+  <!-- 上傳區 -->
+  @if (!sourceFile()) {
+    <div
+      class="dropzone"
+      [class.dragging]="isDragging()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event)"
+      (click)="fileInputRef.nativeElement.click()"
+    >
+      <div class="dropzone-icon">🖼</div>
+      <p class="dropzone-title">拖曳圖片至此，或點擊選擇</p>
+      <p class="dropzone-hint">支援 PNG · JPEG · WebP · GIF · BMP · SVG · AVIF · ICO</p>
+      <button class="btn btn-primary" type="button">選擇圖片</button>
+      <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelect($event)" />
+    </div>
+  }
+
+  <!-- 有檔案後 -->
+  @if (sourceFile()) {
+    <div class="workspace">
+
+      <!-- 左欄：預覽 + 原始資訊 -->
+      <div class="panel panel-source card">
+        <div class="panel-title">
+          <span>原始圖片</span>
+          <button class="btn btn-ghost btn-sm" (click)="clear()">✕ 重新選擇</button>
+        </div>
+        <div class="preview-wrap">
+          <img class="preview-img" [src]="sourceDataUrl()" alt="source" />
+        </div>
+        @if (sourceInfo(); as info) {
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">尺寸</span>
+              <span class="info-val">{{ info.width }} × {{ info.height }} px</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">檔案大小</span>
+              <span class="info-val">{{ formatBytes(info.size) }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">格式</span>
+              <span class="info-val">{{ info.type }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- 右欄：設定 -->
+      <div class="panel panel-settings card">
+        <div class="panel-title">輸出設定</div>
+
+        <!-- 格式選擇 -->
+        <div class="form-group">
+          <label>輸出格式</label>
+          <div class="format-grid">
+            @for (fmt of outputFormats; track fmt.value) {
+              <button
+                class="fmt-btn"
+                [class.active]="selectedFormat() === fmt.value && !convertAll()"
+                [disabled]="convertAll()"
+                (click)="selectedFormat.set(fmt.value); convertAll.set(false)"
+              >{{ fmt.label }}</button>
+            }
+          </div>
+          <label class="checkbox-row">
+            <input type="checkbox" [ngModel]="convertAll()" (ngModelChange)="convertAll.set($event)" />
+            一次轉換所有格式
+          </label>
+        </div>
+
+        <!-- 品質 -->
+        @if (hasQuality) {
+          <div class="form-group">
+            <label>品質 <span class="quality-val">{{ quality() }}%</span></label>
+            <input
+              type="range" min="1" max="100"
+              [ngModel]="quality()" (ngModelChange)="quality.set($event)"
+            />
+          </div>
+        }
+
+        <!-- 尺寸縮放 -->
+        <div class="form-group">
+          <label>輸出尺寸</label>
+          <div class="scale-tabs">
+            <button class="scale-tab" [class.active]="scaleMode()==='original'"  (click)="scaleMode.set('original')">原始尺寸</button>
+            <button class="scale-tab" [class.active]="scaleMode()==='percent'"   (click)="scaleMode.set('percent')">百分比</button>
+            <button class="scale-tab" [class.active]="scaleMode()==='pixels'"    (click)="scaleMode.set('pixels')">自訂像素</button>
+          </div>
+
+          @if (scaleMode() === 'percent') {
+            <div class="scale-row">
+              <input class="form-control" type="number" min="1" max="500"
+                [ngModel]="scalePercent()" (ngModelChange)="scalePercent.set($event)" />
+              <span class="scale-unit">%</span>
+            </div>
+          }
+
+          @if (scaleMode() === 'pixels') {
+            <div class="pixels-row">
+              <input class="form-control" type="number" min="1" placeholder="寬"
+                [ngModel]="scaleWidth()" (ngModelChange)="onWidthChange($event)" />
+              <span class="scale-unit">×</span>
+              <input class="form-control" type="number" min="1" placeholder="高"
+                [ngModel]="scaleHeight()" (ngModelChange)="onHeightChange($event)" />
+              <span class="scale-unit">px</span>
+              <label class="checkbox-row inline">
+                <input type="checkbox" [ngModel]="keepAspect()" (ngModelChange)="keepAspect.set($event)" />
+                等比
+              </label>
+            </div>
+          }
+        </div>
+
+        <!-- JPEG 背景色 -->
+        @if (selectedFormat() === 'image/jpeg' || selectedFormat() === 'image/bmp' || convertAll()) {
+          <div class="form-group">
+            <label>透明背景填色（JPEG / BMP）</label>
+            <div class="color-row">
+              <input class="color-native-sm" type="color"
+                [ngModel]="bgColor()" (ngModelChange)="bgColor.set($event)" />
+              <input class="form-control mono" type="text"
+                [ngModel]="bgColor()" (ngModelChange)="bgColor.set($event)" maxlength="7" />
+            </div>
+          </div>
+        }
+
+        <button
+          class="btn btn-primary convert-btn"
+          [disabled]="isProcessing()"
+          (click)="convert()"
+        >
+          {{ isProcessing() ? '轉換中...' : '開始轉換' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- 結果區 -->
+    @if (results().length > 0) {
+      <div class="results-section">
+        <div class="results-header">
+          <span class="results-title">轉換結果</span>
+          @if (results().length > 1) {
+            <button class="btn btn-secondary btn-sm" (click)="downloadAll()">⬇ 全部下載</button>
+          }
+        </div>
+        <div class="results-grid">
+          @for (result of results(); track result.format) {
+            <div class="result-card card">
+              <div class="result-preview-wrap">
+                <img class="result-preview" [src]="result.dataUrl" [alt]="result.format" />
+              </div>
+              <div class="result-info">
+                <div class="result-format-badge">{{ result.format }}</div>
+                <div class="result-meta">
+                  <span>{{ result.width }} × {{ result.height }} px</span>
+                  <span class="dot">·</span>
+                  <span>{{ formatBytes(result.size) }}</span>
+                  <span class="dot">·</span>
+                  <span [class]="isSmaller(result) ? 'saving' : 'increase'">
+                    {{ compressionRatio(result) }}
+                  </span>
+                </div>
+                <button class="btn btn-primary btn-sm" (click)="download(result)">⬇ 下載</button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

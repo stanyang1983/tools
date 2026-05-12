@@ -1,0 +1,43 @@
+<nav class="navbar">
+  <button class="hamburger btn btn-ghost btn-sm" (click)="layout.toggle()" [class.active]="layout.sidebarOpen()" aria-label="選單">
+    <span class="ham-bar"></span>
+    <span class="ham-bar"></span>
+    <span class="ham-bar"></span>
+  </button>
+
+  <a class="navbar-brand" routerLink="/">
+    <span class="brand-icon">⚙</span>
+    <span class="brand-name">ToolsHub</span>
+  </a>
+
+  <div class="navbar-search">
+    <button class="search-toggle btn btn-ghost btn-sm" (click)="toggleSearch()">🔍</button>
+    @if (showSearch()) {
+      <div class="search-wrapper">
+        <input
+          class="form-control search-input"
+          type="text"
+          placeholder="搜尋工具..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="onSearch($event)"
+          autofocus
+        />
+        @if (results.length > 0) {
+          <div class="search-dropdown">
+            @for (tool of results; track tool.id) {
+              <button class="search-item" (click)="navigate(tool.route)">
+                <span class="search-item-icon">{{ tool.icon }}</span>
+                <div>
+                  <div class="search-item-name">{{ tool.name }}</div>
+                  <div class="search-item-desc">{{ tool.description }}</div>
+                </div>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="navbar-actions"></div>
+</nav>

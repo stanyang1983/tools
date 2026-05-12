@@ -1,0 +1,40 @@
+<div class="home">
+  <div class="home-hero">
+    <h1>開發者工具箱</h1>
+    <p>精選實用工具，提升開發效率</p>
+    <div class="hero-search">
+      <span class="hero-search-icon">🔍</span>
+      <input
+        class="form-control"
+        type="text"
+        placeholder="搜尋工具名稱或功能..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="onSearch($event)"
+      />
+    </div>
+  </div>
+
+  <div class="home-content">
+    <div class="filter-bar">
+      @for (cat of categories; track cat) {
+        <button
+          class="filter-btn"
+          [class.active]="activeCategory() === cat && searchQuery().length <= 1"
+          (click)="setCategory(cat)"
+        >{{ cat }}</button>
+      }
+    </div>
+
+    <div class="tools-grid">
+      @for (tool of tools; track tool.id) {
+        <app-tool-card [tool]="tool" class="fade-in" />
+      }
+      @if (tools.length === 0) {
+        <div class="empty-state">
+          <span class="empty-icon">🔍</span>
+          <p>找不到符合「{{ searchQuery() }}」的工具</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>
