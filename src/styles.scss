@@ -1,4 +1,5 @@
 :root {
+  --bg-sidebar: rgba(15, 23, 42, 0.6);
   --primary: #6366f1;
   --primary-dark: #4f46e5;
   --primary-light: #818cf8;
@@ -26,6 +27,22 @@
   --sidebar-width: 260px;
   --navbar-height: 60px;
   --footer-height: 57px;
+}
+
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-input: #f1f5f9;
+  --bg-sidebar: #eef2ff;
+  --border: #e2e8f0;
+  --border-focus: #6366f1;
+
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #94a3b8;
+
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 *, *::before, *::after {

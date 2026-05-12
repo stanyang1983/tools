@@ -38,4 +38,15 @@
       </div>
     </nav>
   }
+
+  <div class="sidebar-bottom">
+    <button class="theme-switch" (click)="theme.toggle()" [title]="theme.isDark() ? '切換亮色' : '切換暗色'">
+      <span class="switch-track" [class.light]="!theme.isDark()">
+        <span class="switch-thumb">{{ theme.isDark() ? '🌙' : '☀️' }}</span>
+      </span>
+    </button>
+    @if (!collapsed()) {
+      <span class="switch-label">{{ theme.isDark() ? '暗色模式' : '亮色模式' }}</span>
+    }
+  </div>
 </aside>

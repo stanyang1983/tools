@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ToolsService, TOOL_CATEGORIES } from '../../shared/tools.service';
 import { LayoutService } from '../../shared/layout.service';
+import { ThemeService } from '../../shared/theme.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,6 +18,7 @@ export class SidebarComponent {
   constructor(
     private toolsService: ToolsService,
     public layout: LayoutService,
+    public theme: ThemeService,
   ) {}
 
   get tools() {
