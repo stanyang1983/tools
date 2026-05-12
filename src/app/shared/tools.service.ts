@@ -26,6 +26,16 @@ export class ToolsService {
       tags: ['PNG', 'JPEG', 'WebP', 'AVIF', 'BMP', '圖片'],
       isNew: true,
     },
+     {
+      id: 'color-picker',
+      name: '色彩轉換',
+      description: 'HEX、RGB、HSL 格式互相轉換，一鍵複製',
+      icon: '🎨',
+      category: '色彩',
+      route: '/tools/color-picker',
+      tags: ['HEX', 'RGB', 'HSL', '色彩'],
+      isNew: true,
+    },
     {
       id: 'json-formatter',
       name: 'JSON 格式化',
@@ -43,16 +53,6 @@ export class ToolsService {
       category: '編碼',
       route: '/tools/base64',
       tags: ['Base64', '編碼', '解碼'],
-    },
-    {
-      id: 'color-picker',
-      name: '色彩轉換',
-      description: 'HEX、RGB、HSL 格式互相轉換，一鍵複製',
-      icon: '🎨',
-      category: '色彩',
-      route: '/tools/color-picker',
-      tags: ['HEX', 'RGB', 'HSL', '色彩'],
-      isNew: true,
     },
     {
       id: 'text-diff',
