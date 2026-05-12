@@ -17,6 +17,16 @@ export const TOOL_CATEGORIES = ['全部', '文字', '編碼', '色彩', '圖片'
 export class ToolsService {
   private tools: Tool[] = [
     {
+      id: 'bg-remover',
+      name: 'AI 去背工具',
+      description: '使用 RMBG-1.4 模型在瀏覽器本地端去除圖片背景，無需上傳伺服器',
+      icon: '✂️',
+      category: '圖片',
+      route: '/tools/bg-remover',
+      tags: ['去背', 'AI', 'RMBG', '圖片'],
+      isNew: true,
+    },
+    {
       id: 'image-converter',
       name: '圖片格式轉換',
       description: '支援 PNG、JPEG、WebP、BMP、GIF、AVIF 等格式互轉，可調整品質與尺寸',

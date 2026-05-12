@@ -1,0 +1,99 @@
+<div class="tool-container">
+  <div class="tool-header">
+    <h1><span class="tool-icon">✂️</span> AI 去背工具</h1>
+    <p>使用 AI 模型在瀏覽器本地端執行去背，圖片不會上傳至任何伺服器</p>
+  </div>
+
+  <!-- 錯誤 -->
+  @if (phase() === 'error') {
+    <div class="card error-box">⚠ {{ errorMsg() }}</div>
+  }
+
+  <!-- 上傳區 -->
+  @if (!sourceFile()) {
+    <div
+      class="dropzone"
+      [class.dragging]="isDragging()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event)"
+      (click)="fileInputRef.nativeElement.click()"
+    >
+      <div class="dropzone-icon">🖼</div>
+      <p class="dropzone-title">拖曳圖片至此，或點擊選擇</p>
+      <p class="dropzone-hint">支援 PNG · JPEG · WebP</p>
+      <button class="btn btn-primary" type="button">選擇圖片</button>
+      <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelect($event)" />
+    </div>
+  }
+
+  @if (sourceFile()) {
+    <div class="workspace">
+      <!-- 預覽區 -->
+      <div class="preview-section card">
+        <div class="preview-tabs">
+          <button class="preview-tab" [class.active]="!showOriginal()" (click)="showOriginal.set(false)">去背結果</button>
+          <button class="preview-tab" [class.active]="showOriginal()" (click)="showOriginal.set(true)">原始圖片</button>
+        </div>
+
+        <div class="preview-area">
+          @if (showOriginal()) {
+            <img class="preview-img" [src]="sourceDataUrl()" alt="原始" />
+          } @else if (resultDataUrl()) {
+            <img class="preview-img checkerboard" [src]="resultDataUrl()" alt="去背結果" />
+          } @else {
+            <div class="preview-placeholder">
+              @if (phase() === 'processing') {
+                <span class="spinner large"></span>
+                <p>{{ statusMsg() }}</p>
+                @if (progressPct() > 0 && progressPct() < 100) {
+                  <div class="inline-progress">
+                    <div class="progress-bar-wrap">
+                      <div class="progress-bar" [style.width.%]="progressPct()"></div>
+                    </div>
+                    <div class="progress-info">
+                      <span class="progress-file">{{ progressFile() }}</span>
+                      <span>{{ progressPct() }}%</span>
+                    </div>
+                  </div>
+                }
+              } @else {
+                <p>按下「開始去背」後結果顯示於此</p>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- 操作區 -->
+      <div class="actions-section card">
+        <div class="source-info">
+          <p class="file-name">📄 {{ sourceFile()?.name }}</p>
+        </div>
+
+        <div class="action-buttons">
+          @if (phase() !== 'processing') {
+            <button class="btn btn-primary" (click)="process()">
+              ✂️ 開始去背
+            </button>
+          } @else {
+            <button class="btn btn-primary" disabled>
+              <span class="spinner-sm"></span> 處理中...
+            </button>
+          }
+
+          @if (resultDataUrl()) {
+            <button class="btn btn-secondary" (click)="download()">⬇ 下載 PNG</button>
+          }
+
+          <button class="btn btn-ghost" (click)="reset()">✕ 重新選擇</button>
+        </div>
+
+        <div class="model-badge">
+          <span>模型：RMBG · &#64;imgly/background-removal</span>
+          <span class="local-badge">本地端執行</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>

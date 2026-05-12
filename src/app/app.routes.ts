@@ -22,6 +22,10 @@ export const routes: Routes = [
     loadComponent: () => import('./tools/text-diff/text-diff.component').then(m => m.TextDiffComponent),
   },
   {
+    path: 'tools/bg-remover',
+    loadComponent: () => import('./tools/bg-remover/bg-remover.component').then(m => m.BgRemoverComponent),
+  },
+  {
     path: 'tools/image-converter',
     loadComponent: () => import('./tools/image-converter/image-converter.component').then(m => m.ImageConverterComponent),
   },
